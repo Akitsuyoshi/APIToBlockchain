@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Akitsuyoshi",
   "license": "MIT",
-  "description": "web api for blockchai",
+  "description": "web api for blockchain",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,9 +29,13 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-prettier": "^2.6.2",
-    "express": "^4.16.3",
     "husky": "^1.0.0-rc.15",
     "lint-staged": "^7.3.0",
     "prettier": "^1.14.3"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "jest": "^23.6.0",
+    "morgan": "^1.9.1"
   }
 }
