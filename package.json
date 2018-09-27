@@ -6,7 +6,9 @@
   "description": "web api for blockchain",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js",
+    "test": "jest src",
+    "coverage": "jest --collectCoverageFrom=src/**.js --collectCoverageFrom=!src/index.js --coverage src"
   },
   "husky": {
     "hooks": {
@@ -34,8 +36,11 @@
     "prettier": "^1.14.3"
   },
   "dependencies": {
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.3",
     "jest": "^23.6.0",
-    "morgan": "^1.9.1"
+    "level": "^4.0.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.4"
   }
 }
