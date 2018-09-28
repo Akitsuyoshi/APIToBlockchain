@@ -6,7 +6,7 @@
   "description": "web api for blockchain",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon src/api/index.js",
     "test": "mocha src/test.js",
     "coverage": "jest --collectCoverageFrom=src/**.js --collectCoverageFrom=!src/index.js --coverage src"
   },
