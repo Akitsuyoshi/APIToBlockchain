@@ -2,9 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-
 const { getBlockHeight, getBlock } = require('../blockChain/db');
-
 
 router.get('/:blockHeight', async (req, res) => {
   try {
