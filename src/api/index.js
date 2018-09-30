@@ -1,5 +1,6 @@
 const express = require('express');
 const logger = require('morgan');
+const bodyParser = require('body-parser');
 const router = require('./router');
 
 const app = express();
@@ -17,6 +18,9 @@ app.use((req, res, next) => {
 });
 
 app.use(logger('dev'));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use('/block', router);
 
