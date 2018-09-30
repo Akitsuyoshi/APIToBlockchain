@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "nodemon src/api/index.js",
     "test": "mocha src/test.js",
-    "coverage": "jest --collectCoverageFrom=src/**.js --collectCoverageFrom=!src/index.js --coverage src"
+    "makeChains": "node src/blockChain/makeMockForBlockChain.js"
   },
   "husky": {
     "hooks": {
@@ -36,6 +36,7 @@
     "prettier": "^1.14.3"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.3",
