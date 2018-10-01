@@ -112,7 +112,7 @@ describe('API', () => {
         res.statusCode.should.equal(404);
         expect(body).to.deep.equal(JSON.stringify({
           status: 'false',
-          body: 'body should include some content',
+          body: 'body should include some content in string',
         }));
       });
     });
