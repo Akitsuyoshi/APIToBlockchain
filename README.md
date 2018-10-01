@@ -4,6 +4,7 @@ Web API(GET, POST) written in express.js for private Blockchain.
 
 ## Getting Started
 
+
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
@@ -12,22 +13,24 @@ You have installed node and yarn in your local machine.
 
 ### Installing
 
-Install this repo
+Install this repo, dependencies, and make the migration for getting database.
+
 ```
 git clone https://github.com/Akitsuyoshi/APIToBlockchain.git
-```
 
-Install the dependencies
-
-```
 yarn
-```
 
-And then, making the migration to get mock data.
-
-```
 yarn makeChains
 ```
+
+Now that you get privateChains in db folder, including 0-10 blocks, you can get started with the following commad.
+
+```
+yarn dev
+```
+
+If you'd like to add another 10 blocks to your private chains,
+ just run `yarn makeChains` again.
 
 ## Running the tests
 
@@ -35,13 +38,33 @@ Please make sure that you already made mock data by `yarn makeChains`
 
 ### Break down into end to end tests
 
-If you wanna see stub test
+1. Run the server by `yarn dev` 
+
+2. Go to the http://localhost:8000/block/0 (you can change block height)
+
+3. Check if  the height 0 is first block of blockchains.
+
+4. Get http://localhost:8000/block/-1, and then return the error with message.
+
+5. Post the data which holds object, and confirm if new block is gonna be created and get it back to respond you.
+the data in post should be like that
+
+```
+{ data: "some string value in here"}
+```
+
+If you can get a new block, it means the post is done correctly.
+
+
+### Stub and Integration test for GET, POST api
+
+For the stub test, hit the command in your terminal
 
 ```
 yarn test
 ```
 
-The case you wanna see the integration test, which actually calls api endpoint.
+For the Integration test, calling actual api.
 
 ```
 yarn httpTest
@@ -50,8 +73,6 @@ yarn httpTest
 ### And coding style tests
 
 Whenever you commit your code, prettier is invoked to fix the coding style, taking airbnb linting style :)
-
-
 
 
 ## Built With
