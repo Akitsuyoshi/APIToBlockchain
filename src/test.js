@@ -10,6 +10,7 @@ const baseURL = 'http://localhost:3000/block';
 describe('API', () => {
   let headerObj;
   let errObj;
+  let errPostObj;
   beforeEach(() => {
     headerObj = {
       statusCode: 200,
@@ -22,6 +23,10 @@ describe('API', () => {
     };
     errObj = {
       status: 'error', msg: 'the block of given Id does not exist in the chain',
+    };
+    errPostObj = {
+      status: 'false',
+      body: 'body should include some content',
     };
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -96,6 +101,18 @@ describe('API', () => {
           body: 'Test Block - 8',
           time: '1538090059',
           previousBlockHash: 'c7642feb2eb989fe9ae0fdac0313cd3f73783a8a374be5ccdbbdf20f7659e202',
+        }));
+      });
+    });
+
+    it('should return false if body is not including any content', () => {
+      headerObj.statusCode = 404;
+      this.post.yields(null, headerObj, JSON.stringify(errPostObj));
+      request.post(baseURL, (err, res, body) => {
+        res.statusCode.should.equal(404);
+        expect(body).to.deep.equal(JSON.stringify({
+          status: 'false',
+          body: 'body should include some content in string',
         }));
       });
     });
