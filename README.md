@@ -46,7 +46,7 @@ Please make sure that you already made mock data by `yarn makeChains`
 
 4. Get http://localhost:8000/block/-1, and then return the error with message.
 
-5. Post the data which holds object, and confirm if new block is gonna be created and get it back to respond you.
+5. Post http://localhost:8000/block with data which is object, and confirm if new block is gonna be created and get it back to respond you.
 the data in post should be like that
 
 ```
