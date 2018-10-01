@@ -7,7 +7,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/api/index.js",
-    "test": "mocha src/test.js",
+    "test": "mocha src/test/test.js",
+    "httpTest": "mocha src/test/integrationTest.js",
     "makeChains": "node src/blockChain/makeMockForBlockChain.js"
   },
   "husky": {
