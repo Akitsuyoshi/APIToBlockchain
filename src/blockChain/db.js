@@ -43,7 +43,10 @@ function getBlock(blockHeight) {
   return new Promise((resolve, reject) => {
     db.get(blockHeight)
       .then(value => resolve(JSON.parse(value)))
-      .catch(err => reject(console.log('Not found!', err)));
+      .catch((err) => {
+        console.log('Not found!', err);
+        return reject(err);
+      });
   });
 }
 
