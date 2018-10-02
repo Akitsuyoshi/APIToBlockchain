@@ -5,40 +5,42 @@ const router = express.Router();
 const Block = require('../blockChain/block');
 const { getBlockHeight, getBlock, putBlockToDB } = require('../blockChain/db');
 
+const makeErrObj = msg => ({
+  status: 'error',
+  msg,
+});
+
 router.get('/:blockHeight', async (req, res) => {
+  const errMsg = 'the block of given Id does not exist in the chain';
   try {
     const { blockHeight } = req.params;
-    if (blockHeight < 0 || blockHeight > await getBlockHeight()) {
-      res.status(404);
-      return res.json({ status: 'error', msg: 'the block of given Id does not exist in the chain' });
-    }
-    res.status(200);
+
     const block = await getBlock(blockHeight);
-    return res.json(block);
+    return res.status(200).json(block);
   } catch (err) {
     console.log(err);
-    return err;
+    return res.status(200).json(makeErrObj(errMsg));
   }
 });
 
 router.post('/', async (req, res) => {
+  const errMsg = 'data should include some content in string';
   try {
     const { data } = req.body;
-    if (!data || typeof data !== 'string') {
-      res.status(404);
-      return res.json({ status: 'false', body: 'body should include some content in string' });
-    }
+    if (!data || typeof data !== 'string') throw errMsg;
+
     const newBlock = new Block(data);
-    const newHeight = await getBlockHeight() + 1;
-    const prev = await getBlock(newHeight - 1);
+    const height = await getBlockHeight();
+    if (height === 0) await putBlockToDB(new Block('First block in the chain - Genesis block'), 0);
 
+    const prev = await getBlock(height);
     newBlock.previousBlockHash = prev.hash;
-    putBlockToDB(newBlock, newHeight);
+    putBlockToDB(newBlock, height + 1);
 
-    return res.json(newBlock);
+    return res.status(200).json(newBlock);
   } catch (err) {
     console.log(err);
-    return err;
+    return res.status(200).json(makeErrObj(errMsg));
   }
 });
 
