@@ -4,33 +4,24 @@ Web API(GET, POST) written in express.js for private Blockchain.
 
 ## Getting Started
 
-
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-You have installed node and yarn in your local machine.
+Have installed node and yarn in your local machine.
 
 ### Installing
 
-Install this repo, dependencies
-
 ```
+// Install this repo, dependencies
 git clone https://github.com/Akitsuyoshi/APIToBlockchain.git
 
 yarn
-```
 
-Optional: you can make the migration by adding seed data.
-
-```
+// Optional: you can make the migration by adding seed data.
 yarn makeChains
-```
 
-Now that you get privateChains in db folder, including 0-10 blocks,
-you can start your development server by this following command.
-
-```
+// start your development server
 yarn dev
 ```
 
@@ -75,24 +66,16 @@ Note that payload should be object in this structure, `{data: stringValue}`
  - hit the link, http://localhost:8000/block/-1
  - it is OK if it returns the response, `{  status: 'error', msg: 'the block of given Id does not exist in the chain'}`
 
-```
-{ data: "some string value in here"}
-```
-
-If you can get a new block, it means the post is done correctly.
-
 
 ### Stub and Integration test for GET, POST api
 
-For the stub test, hit the command in your terminal
+One things to note is that integration test is actually going to call the api, so you need to start your server beforehand.
 
 ```
+// For the stub test
 yarn test
-```
 
-For the Integration test, calling actual api.
-
-```
+// For the Integration test
 yarn httpTest
 ```
 
