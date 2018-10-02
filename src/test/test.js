@@ -22,11 +22,12 @@ describe('API', () => {
       },
     };
     errObj = {
-      status: 'error', msg: 'the block of given Id does not exist in the chain',
+      status: 'error',
+      msg: 'the block of given Id does not exist in the chain',
     };
     errPostObj = {
-      status: 'false',
-      body: 'body should include some content',
+      status: 'error',
+      msg: 'data should include some content in string',
     };
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -79,10 +80,8 @@ describe('API', () => {
     });
 
     it('should return response error if block is not existed', () => {
-      headerObj.statusCode = 404;
       this.get.yields(null, headerObj, JSON.stringify(errObj));
       request.get(`${baseURL}/12`, (err, res, body) => {
-        res.statusCode.should.equal(404);
         expect(body).to.deep.equal(JSON.stringify({
           status: 'error', msg: 'the block of given Id does not exist in the chain',
         }));
@@ -106,13 +105,11 @@ describe('API', () => {
     });
 
     it('should return false if body is not including any content', () => {
-      headerObj.statusCode = 404;
       this.post.yields(null, headerObj, JSON.stringify(errPostObj));
       request.post(baseURL, (err, res, body) => {
-        res.statusCode.should.equal(404);
         expect(body).to.deep.equal(JSON.stringify({
-          status: 'false',
-          body: 'body should include some content in string',
+          status: 'error',
+          msg: 'data should include some content in string',
         }));
       });
     });
