@@ -9,7 +9,7 @@
     "start": "node src/api/index.js",
     "dev": "nodemon src/api/index.js",
     "test": "mocha src/test/test.js",
-    "httpTest": "mocha src/test/integrationTest.js",
+    "httpTest": "yarn dev && mocha src/test/integrationTest.js",
     "makeChains": "node src/blockChain/makeMockForBlockChain.js"
   },
   "husky": {
