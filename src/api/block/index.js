@@ -2,8 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
-const Block = require('../blockChain/block');
-const { getBlockHeight, getBlock, putBlockToDB } = require('../blockChain/db');
+const Block = require('../../blockChain/block');
+const { getBlockHeight, getBlock, putBlockToDB } = require('../../blockChain/db');
 
 const makeErrObj = msg => ({
   status: 'error',
@@ -22,18 +22,6 @@ router.get('/:blockHeight', async (req, res) => {
     return res.status(200).json(makeErrObj(errMsg));
   }
 });
-
-// router.get('/', async (req, res) => {
-//   const errMsg = 'blocks is not created yet';
-//   try {
-//     const height = await getBlockHeight();
-//     const block = await getBlock(height);
-//     return res.status(200).json(block);
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(200).json(makeErrObj(errMsg));
-//   }
-// });
 
 router.post('/', async (req, res) => {
   const errMsg = 'data should include some content in string';
