@@ -1,8 +1,12 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+
 const block = require('./block');
 const bestBlock = require('./bestBlock');
+const requestValidation = require('./requestValidation');
+const messageSignature = require('./messageSignature');
+const stars = require('./stars');
 
 const app = express();
 const port = 8000;
@@ -25,6 +29,10 @@ app.use(bodyParser.json());
 
 app.use('/block', block);
 app.use('/bestBlock', bestBlock);
+app.use('/requestValidation', requestValidation);
+app.use('/message-signature', messageSignature);
+app.use('/stars', stars);
+
 
 app.listen(port, () => console.log(`hello world is waiting for us on port ${port}`));
 
