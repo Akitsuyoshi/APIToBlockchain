@@ -87,6 +87,20 @@ describe('API', () => {
         }));
       });
     });
+
+    xit('should return response last block, which is called best block', () => {
+      this.get.yields(null, headerObj, JSON.stringify(blocks[10]));
+      request.get(`${baseURL}/best`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify({
+          hash: '26b90ad9d81bb4e309453ca076dec0a17bda4b16c6dfae891e86fd62e901ed15',
+          height: 10,
+          body: 'Test Block - 10',
+          time: '1538090061',
+          previousBlockHash: '85baa4a66a6a242c7804e9b0fc68a6a91a51711470ef94ee0a5c478194fc17dc',
+        }));
+      });
+    });
   });
 
   describe('POST request', () => {
