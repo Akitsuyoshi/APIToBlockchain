@@ -5,7 +5,7 @@ require('chai').should();
 
 const blocks = require('./mockDataForTest');
 
-const baseURL = 'http://localhost:3000/block';
+const baseURL = 'http://localhost:3000';
 
 describe('API', () => {
   let headerObj;
@@ -39,7 +39,7 @@ describe('API', () => {
 
   it('should have header in a correct manner', () => {
     this.get.yields(null, headerObj, JSON.stringify({}));
-    request.get(baseURL, (err, res, body) => {
+    request.get(`${baseURL}/block`, (err, res, body) => {
       res.statusCode.should.eql(200);
       res.headers['content-type'].should.contain('application/json; charset=utf-8');
       res.headers['Content-Length'].should.contain('238');
@@ -53,7 +53,7 @@ describe('API', () => {
   describe('GET request', () => {
     it('should return response 0 height block to get call', () => {
       this.get.yields(null, headerObj, JSON.stringify(blocks[0]));
-      request.get(`${baseURL}/0`, (err, res, body) => {
+      request.get(`${baseURL}/block/0`, (err, res, body) => {
         res.statusCode.should.equal(200);
         expect(body).to.deep.equal(JSON.stringify({
           hash: 'a449da79cb962e1ad2f33afd3e60c11ee044ee42feeb1d6d7286bc496bfe2578',
@@ -67,7 +67,7 @@ describe('API', () => {
 
     it('should return response, 1 height block to get call', () => {
       this.get.yields(null, headerObj, JSON.stringify(blocks[1]));
-      request.get(`${baseURL}/1`, (err, res, body) => {
+      request.get(`${baseURL}/block/1`, (err, res, body) => {
         res.statusCode.should.equal(200);
         expect(body).to.deep.equal(JSON.stringify({
           hash: 'c524497b60a4378e63e134c7c27b1a4431c7d3e3ae4f720348095937cf0bb9b8',
@@ -81,9 +81,23 @@ describe('API', () => {
 
     it('should return response error if block is not existed', () => {
       this.get.yields(null, headerObj, JSON.stringify(errObj));
-      request.get(`${baseURL}/12`, (err, res, body) => {
+      request.get(`${baseURL}/block/12`, (err, res, body) => {
         expect(body).to.deep.equal(JSON.stringify({
           status: 'error', msg: 'the block of given Id does not exist in the chain',
+        }));
+      });
+    });
+
+    xit('should return response last block, which is called best block', () => {
+      this.get.yields(null, headerObj, JSON.stringify(blocks[10]));
+      request.get(`${baseURL}/block/best`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify({
+          hash: '26b90ad9d81bb4e309453ca076dec0a17bda4b16c6dfae891e86fd62e901ed15',
+          height: 10,
+          body: 'Test Block - 10',
+          time: '1538090061',
+          previousBlockHash: '85baa4a66a6a242c7804e9b0fc68a6a91a51711470ef94ee0a5c478194fc17dc',
         }));
       });
     });
@@ -106,7 +120,7 @@ describe('API', () => {
 
     it('should return false if body is not including any content', () => {
       this.post.yields(null, headerObj, JSON.stringify(errPostObj));
-      request.post(baseURL, (err, res, body) => {
+      request.post(`${baseURL}/block`, (err, res, body) => {
         expect(body).to.deep.equal(JSON.stringify({
           status: 'error',
           msg: 'data should include some content in string',

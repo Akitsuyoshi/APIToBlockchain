@@ -23,6 +23,18 @@ router.get('/:blockHeight', async (req, res) => {
   }
 });
 
+// router.get('/', async (req, res) => {
+//   const errMsg = 'blocks is not created yet';
+//   try {
+//     const height = await getBlockHeight();
+//     const block = await getBlock(height);
+//     return res.status(200).json(block);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(200).json(makeErrObj(errMsg));
+//   }
+// });
+
 router.post('/', async (req, res) => {
   const errMsg = 'data should include some content in string';
   try {

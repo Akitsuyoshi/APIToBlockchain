@@ -23,10 +23,12 @@ yarn makeChains
 
 // start your development server
 yarn dev
+
+// When you wanna delete your chains data,
+yarn delChains
 ```
 
-If you'd like to add another 10 blocks to your private chains,
- just run `yarn makeChains` again.
+Just make sure that levelDB is suited for single process, not sharing by multiple thread.
 
  ## Endpoint
 
@@ -45,31 +47,36 @@ Note that payload should be object in this structure, `{data: stringValue}`
 
 ## Running the tests
 
+### Unit test(TDD)
+
+It should take following steps to make each API endpoint
+
+1. Make stub test in [src/test/test.js](src/test/test.js)
+2. Make API corresponding to test you write
+3. Make integration test in [src/test/integrationTest.js](src/test/integrationTest.js)
+4. Call api from Postman, insomnia, or something you'd prefer.
+
+
 ### end to end tests
 
 1. Run the server by `yarn dev` 
 
 2. Check POST endpoint first at  http://localhost:8000/block
  - payload data should look like `{data: 'some string value'}`
- - make sure that your passed data is object and having data property, holding string value
  - the response data from POST is supposed to be the new created Block
 
 3. Validate POST by passing empty data
  - pass payload which is `{data: ''}`
- - the response is gonna be `{ status: 'error', msg: 'data should include some content in string'}`
+ - the response is supposed to be `{ status: 'error', msg: 'data should include some content in string'}`
 
-4. Check GET endpoint at  http://localhost:8000/block/0
- - make sure if genesis block is created, if so, you can get the block as response json object.
+4. Check GET endpoint at http://localhost:8000/block/0
  - If you followed the test for post endpoind, you can check that height block you made before.
 
-5. Validate GET endpoint by looking for id that doesn't exist in the chains.
- - hit the link, http://localhost:8000/block/-1
- - it is OK if it returns the response, `{  status: 'error', msg: 'the block of given Id does not exist in the chain'}`
+5. Validate GET endpoint by looking for id that doesn't exist in the chains at http://localhost:8000/block/-1
+ - the response should be like that, `{  status: 'error', msg: 'the block of given Id does not exist in the chain'}`
 
 
-### Stub and Integration test for GET, POST api
-
-One things to note is that integration test is actually going to call the api, so you need to start your server beforehand.
+### Stub and Integration tests for GET, POST API
 
 ```
 // For the stub test
@@ -79,9 +86,11 @@ yarn test
 yarn httpTest
 ```
 
+Note that integration test is actually going to call the api, so you need to start your server beforehand.
+
 ### And coding style tests
 
-Whenever you commit your code, prettier is invoked to fix the coding style, taking airbnb linting style :)
+Whenever you commit your code, prettier is invoked to fix the coding style, taking it to the airbnb style :)
 
 
 ## Built With
