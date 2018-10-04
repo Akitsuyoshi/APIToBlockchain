@@ -88,9 +88,9 @@ describe('API', () => {
       });
     });
 
-    xit('should return response last block, which is called best block', () => {
+    it('should return response last block, which is called best block', () => {
       this.get.yields(null, headerObj, JSON.stringify(blocks[10]));
-      request.get(`${baseURL}/block/best`, (err, res, body) => {
+      request.get(`${baseURL}/bestBlock`, (err, res, body) => {
         res.statusCode.should.equal(200);
         expect(body).to.deep.equal(JSON.stringify({
           hash: '26b90ad9d81bb4e309453ca076dec0a17bda4b16c6dfae891e86fd62e901ed15',
