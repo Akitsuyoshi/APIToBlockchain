@@ -38,6 +38,8 @@ Just make sure that levelDB is suited for single process, not sharing by multipl
 
 ` http://localhost:8000/block/0` - the block in the chains with given height(in this case, 0)
 
+` http://localhost:8000/bestBlock` - the best block, most recent added block to chains
+
 ### POST
 
 ` http://localhost:8000/block` - adds a new block at the end of chains, along with payload data

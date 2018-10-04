@@ -1,7 +1,8 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const router = require('./router');
+const block = require('./block');
+const bestBlock = require('./bestBlock');
 
 const app = express();
 const port = 8000;
@@ -22,7 +23,8 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/block', router);
+app.use('/block', block);
+app.use('/bestBlock', bestBlock);
 
 app.listen(port, () => console.log(`hello world is waiting for us on port ${port}`));
 
