@@ -1,7 +1,7 @@
 const request = require('request');
 require('chai').should();
 
-const base = 'http://localhost:8000/block';
+const base = 'http://localhost:8000';
 
 describe('characters', () => {
   describe('setup', () => {
@@ -9,7 +9,7 @@ describe('characters', () => {
 
   describe('get', () => {
     it('should return block, height 0', (done) => {
-      request.get(`${base}/0`, (err, res, body) => {
+      request.get(`${base}/block/0`, (err, res, body) => {
         res.statusCode.should.eql(200);
         res.headers['content-type'].should.contain('application/json');
 
@@ -24,7 +24,7 @@ describe('characters', () => {
     });
 
     it('should return error, height -1', (done) => {
-      request.get(`${base}/-1`, (err, res, body) => {
+      request.get(`${base}/block/-1`, (err, res, body) => {
         res.statusCode.should.eql(200);
         res.headers['content-type'].should.contain('application/json');
 
@@ -40,7 +40,7 @@ describe('characters', () => {
 
   describe('post', () => {
     const options = {
-      uri: `${base}`,
+      uri: `${base}/block`,
       form: {
         data: 'test string',
       },
