@@ -129,15 +129,30 @@ describe('API', () => {
     });
 
     it('should return response once user request validation for restry', (done) => {
-      const payload = {
+      const response = {
         address: '17RebJGPcUX3z7zoWJdmUgkBbvZ7BAKPCB',
+        requestTimeStamp: '1532296090',
+        message: '17RebJGPcUX3z7zoWJdmUgkBbvZ7BAKPCB:1532296090:starRegistry',
+        validationWindow: 300,
       };
-      const message = `${payload.address}:300:starRegistry`;
 
-      this.post.yields(null, headerObj, JSON.stringify({ message }));
+      this.post.yields(null, headerObj, JSON.stringify(response));
       request.post(`${baseURL}/requestValidation`, (err, res, body) => {
         res.statusCode.should.equal(200);
-        expect(body).to.deep.equal(JSON.stringify({ message }));
+        expect(body).to.deep.equal(JSON.stringify(response));
+      });
+      done();
+    });
+    it('should return err once validationWindow is 0', (done) => {
+      const response = {
+        status: 'error',
+        msg: 'Please try again because validation time is expired now',
+      };
+
+      this.post.yields(null, headerObj, JSON.stringify(response));
+      request.post(`${baseURL}/requestValidation`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify(response));
       });
       done();
     });
