@@ -156,5 +156,30 @@ describe('API', () => {
       });
       done();
     });
+
+    it('should return response once user request validation for message signature', (done) => {
+      const payload = {
+        address: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ',
+        signature: 'H6ZrGrF0Y4rMGBMRT2+hHWGbThTIyhBS0dNKQRov9Yg6GgXcHxtO9GJN4nwD2yNXpnXHTWU9i+qdw5vpsooryLU=',
+      };
+
+      const response = {
+        registerStar: true,
+        status: {
+          address: payload.address,
+          requestTimeStamp: '1532296090',
+          message: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ:1532296090:starRegistry',
+          validationWindow: 193,
+          messageSignature: 'valid',
+        },
+      };
+
+      this.post.yields(null, headerObj, JSON.stringify(response));
+      request.post(`${baseURL}/message-signature/validate`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify(response));
+      });
+      done();
+    });
   });
 });
