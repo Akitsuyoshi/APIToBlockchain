@@ -39,6 +39,8 @@
     "prettier": "^1.14.3"
   },
   "dependencies": {
+    "bitcoinjs-lib": "^4.0.2",
+    "bitcoinjs-message": "^2.0.0",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "crypto-js": "^3.1.9-1",
