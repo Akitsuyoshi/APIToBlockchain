@@ -127,5 +127,19 @@ describe('API', () => {
         }));
       });
     });
+
+    it('should return response once user request validation for restry', (done) => {
+      const payload = {
+        address: '17RebJGPcUX3z7zoWJdmUgkBbvZ7BAKPCB',
+      };
+      const message = `${payload.address}:300:starRegistry`;
+
+      this.post.yields(null, headerObj, JSON.stringify({ message }));
+      request.post(`${baseURL}/requestValidation`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify({ message }));
+      });
+      done();
+    });
   });
 });
