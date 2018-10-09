@@ -10,6 +10,8 @@ const makeErrObj = msg => ({
   msg,
 });
 
+const check = (obj, prop) => Object.hasOwnProperty.call(obj, prop);
+
 router.get('/:blockHeight', async (req, res) => {
   const errMsg = 'the block of given Id does not exist in the chain';
   try {
@@ -26,13 +28,17 @@ router.get('/:blockHeight', async (req, res) => {
 router.post('/', async (req, res) => {
   const errMsg = 'data should include validated address and star object';
   const errStarMsg = 'star story should be described within 250 words.';
+  const errStarPropMsg = 'star should contain 3 props, dec, ra, and story';
   try {
     const { address, star } = req.body;
     if ((!address || address !== req.session.address) || !star || req.session.registerStar !== 'true') {
       throw errMsg;
+    } else if (star.story.length > 250) {
+      throw errStarMsg;
+    } else if (star.length !== 3 || check(star, 'dec') || check(star, 'ra') || check(star, 'story')) {
+      throw errStarPropMsg;
     }
-    if (star.story.length > 250) throw errStarMsg;
-    console.log(star);
+
     // eslint-disable-next-line
     star.story = Buffer.from(star.story, 'utf8').toString('hex');
     const data = { address, star };
