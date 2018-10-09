@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
   const r = {
     address,
     requestTimeStamp: Date.now(),
-    message: `${address}:${this.requestTimeStamp}:starRegistry`,
+    message: `${address}:${Date.now()}:starRegistry`,
     validationWindow: 300,
   };
   if (!req.session.address) {
@@ -24,8 +24,9 @@ router.post('/', async (req, res) => {
   } else {
     r.requestTimeStamp = req.session.requestTimeStamp;
     r.validationWindow = Math.floor((300 * 1000 + r.requestTimeStamp - Date.now()) / 1000);
+    r.message = `${address}:${r.requestTimeStamp}:starRegistry`;
   }
-  if (r.validationWindow <= 0) {
+  if (r.validationWindow <= 0 && !req.session.registerStar) {
     return req.session.destroy(() => res.status(200).json(makeErrObj('Please try again because validation time is expired now')));
   }
   return res.status(200).json(r);

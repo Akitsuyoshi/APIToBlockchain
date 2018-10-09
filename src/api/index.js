@@ -31,7 +31,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: false,
-    maxage: 1000 * 300,
+    maxage: 1000 * 1200,
   },
 }));
 

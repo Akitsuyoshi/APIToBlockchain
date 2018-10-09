@@ -24,10 +24,18 @@ router.get('/:blockHeight', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const errMsg = 'data should include some content in string';
+  const errMsg = 'data should include validated address and star object';
+  const errStarMsg = 'star story should be described within 250 words.';
   try {
-    const { data } = req.body;
-    if (!data || typeof data !== 'string') throw errMsg;
+    const { address, star } = req.body;
+    if ((!address || address !== req.session.address) || !star || req.session.registerStar !== 'true') {
+      throw errMsg;
+    }
+    if (star.story.length > 250) throw errStarMsg;
+    console.log(star);
+    // eslint-disable-next-line
+    star.story = Buffer.from(star.story, 'utf8').toString('hex');
+    const data = { address, star };
 
     const newBlock = new Block(data);
     const height = await getBlockHeight();
@@ -37,7 +45,7 @@ router.post('/', async (req, res) => {
     newBlock.previousBlockHash = prev.hash;
     putBlockToDB(newBlock, height + 1);
 
-    return res.status(200).json(newBlock);
+    return req.session.destroy(() => res.status(200).json(newBlock));
   } catch (err) {
     console.log(err);
     return res.status(200).json(makeErrObj(errMsg));

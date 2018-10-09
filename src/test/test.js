@@ -10,7 +10,7 @@ const baseURL = 'http://localhost:3000';
 describe('API', () => {
   let headerObj;
   let errObj;
-  let errPostObj;
+  let bBody;
   beforeEach(() => {
     headerObj = {
       statusCode: 200,
@@ -25,9 +25,14 @@ describe('API', () => {
       status: 'error',
       msg: 'the block of given Id does not exist in the chain',
     };
-    errPostObj = {
-      status: 'error',
-      msg: 'data should include some content in string',
+    bBody = {
+      address: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ',
+      star: {
+        ra: '16h 29m 1.0s',
+        dec: "-26° 29' 24.9",
+        story: '466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f',
+        storyDecoded: 'Found star using https://www.google.com/sky/',
+      },
     };
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -66,13 +71,16 @@ describe('API', () => {
     });
 
     it('should return response, 1 height block to get call', () => {
+      const b = blocks[1];
+      b.body = bBody;
+
       this.get.yields(null, headerObj, JSON.stringify(blocks[1]));
       request.get(`${baseURL}/block/1`, (err, res, body) => {
         res.statusCode.should.equal(200);
         expect(body).to.deep.equal(JSON.stringify({
           hash: 'c524497b60a4378e63e134c7c27b1a4431c7d3e3ae4f720348095937cf0bb9b8',
           height: 1,
-          body: 'Test Block - 1',
+          body: bBody,
           time: '1538090052',
           previousBlockHash: 'a449da79cb962e1ad2f33afd3e60c11ee044ee42feeb1d6d7286bc496bfe2578',
         }));
@@ -84,6 +92,40 @@ describe('API', () => {
       request.get(`${baseURL}/block/12`, (err, res, body) => {
         expect(body).to.deep.equal(JSON.stringify({
           status: 'error', msg: 'the block of given Id does not exist in the chain',
+        }));
+      });
+    });
+
+    it('should return response, correspoinding to passed wallet address', () => {
+      const b = blocks[1];
+      b.body = bBody;
+
+      this.get.yields(null, headerObj, JSON.stringify(blocks[1]));
+      request.get(`${baseURL}/stars/address:142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify({
+          hash: 'c524497b60a4378e63e134c7c27b1a4431c7d3e3ae4f720348095937cf0bb9b8',
+          height: 1,
+          body: bBody,
+          time: '1538090052',
+          previousBlockHash: 'a449da79cb962e1ad2f33afd3e60c11ee044ee42feeb1d6d7286bc496bfe2578',
+        }));
+      });
+    });
+
+    it('should return response, correspoinding to passed hash value', () => {
+      const b = blocks[1];
+      b.body = bBody;
+
+      this.get.yields(null, headerObj, JSON.stringify(blocks[1]));
+      request.get(`${baseURL}/stars/hash:c524497b60a4378e63e134c7c27b1a4431c7d3e3ae4f720348095937cf0bb9b8`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify({
+          hash: 'c524497b60a4378e63e134c7c27b1a4431c7d3e3ae4f720348095937cf0bb9b8',
+          height: 1,
+          body: bBody,
+          time: '1538090052',
+          previousBlockHash: 'a449da79cb962e1ad2f33afd3e60c11ee044ee42feeb1d6d7286bc496bfe2578',
         }));
       });
     });
@@ -105,25 +147,51 @@ describe('API', () => {
 
   describe('POST request', () => {
     it('should return response once user post the new block', () => {
+      const b = {
+        address: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ',
+        star: {
+          ra: '16h 29m 1.0s',
+          dec: "-26° 29' 24.9",
+          story: 'Found star using https://www.google.com/sky/',
+        },
+      };
+      // eslint-disable-next-line
+      b.star.story = Buffer.from(b.star.story, 'utf8').toString('hex');
+      // console.log(b.star);
+      blocks[8].body = b;
       this.post.yields(null, headerObj, JSON.stringify(blocks[8]));
-      request.post(baseURL, (err, res, body) => {
+      request.post(`${baseURL}/block`, (err, res, body) => {
         res.statusCode.should.equal(200);
         expect(body).to.deep.equal(JSON.stringify({
           hash: '6456a64ff9376a261cdabf3c072ac7e581fc89ee9c03966e41c4268a579b023e',
           height: 8,
-          body: 'Test Block - 8',
+          body: b,
           time: '1538090059',
           previousBlockHash: 'c7642feb2eb989fe9ae0fdac0313cd3f73783a8a374be5ccdbbdf20f7659e202',
         }));
       });
     });
 
-    it('should return false if body is not including any content', () => {
-      this.post.yields(null, headerObj, JSON.stringify(errPostObj));
+    it('should return error if star story is over 251 words', () => {
+      const b = {
+        address: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ',
+        star: {
+          ra: '16h 29m 1.0s',
+          dec: "-26° 29' 24.9",
+          story: 'a'.repeat(251),
+        },
+      };
+      this.post.yields(null, headerObj, JSON.stringify(b));
       request.post(`${baseURL}/block`, (err, res, body) => {
+        if (JSON.parse(body).star.story.length > 250) {
+          body = JSON.stringify({
+            status: 'error',
+            msg: 'star story should be described within 250 words.',
+          });
+        }
         expect(body).to.deep.equal(JSON.stringify({
           status: 'error',
-          msg: 'data should include some content in string',
+          msg: 'star story should be described within 250 words.',
         }));
       });
     });
@@ -151,6 +219,31 @@ describe('API', () => {
 
       this.post.yields(null, headerObj, JSON.stringify(response));
       request.post(`${baseURL}/requestValidation`, (err, res, body) => {
+        res.statusCode.should.equal(200);
+        expect(body).to.deep.equal(JSON.stringify(response));
+      });
+      done();
+    });
+
+    it('should return response once user request validation for message signature', (done) => {
+      const payload = {
+        address: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ',
+        signature: 'H6ZrGrF0Y4rMGBMRT2+hHWGbThTIyhBS0dNKQRov9Yg6GgXcHxtO9GJN4nwD2yNXpnXHTWU9i+qdw5vpsooryLU=',
+      };
+
+      const response = {
+        registerStar: true,
+        status: {
+          address: payload.address,
+          requestTimeStamp: '1532296090',
+          message: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ:1532296090:starRegistry',
+          validationWindow: 193,
+          messageSignature: 'valid',
+        },
+      };
+
+      this.post.yields(null, headerObj, JSON.stringify(response));
+      request.post(`${baseURL}/message-signature/validate`, (err, res, body) => {
         res.statusCode.should.equal(200);
         expect(body).to.deep.equal(JSON.stringify(response));
       });
