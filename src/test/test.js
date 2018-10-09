@@ -196,7 +196,32 @@ describe('API', () => {
       });
     });
 
-    it('should return response once user request validation for restry', (done) => {
+    it('should return error if star does not correct props', () => {
+      const b = {
+        address: '142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ',
+        star: {
+          ra: '16h 29m 1.0s',
+          dec: "-26° 29' 24.9",
+        },
+      };
+      this.post.yields(null, headerObj, JSON.stringify(b));
+      request.post(`${baseURL}/block`, (err, res, body) => {
+        const check = (obj, prop) => Object.hasOwnProperty.call(obj, prop);
+        const { star } = JSON.parse(body);
+        if (star.length !== 3 || check(star, 'dec') || check(star, 'ra') || check(star, 'story')) {
+          body = JSON.stringify({
+            status: 'error',
+            msg: 'star should contain 3 props, dec, ra, and story',
+          });
+        }
+        expect(body).to.deep.equal(JSON.stringify({
+          status: 'error',
+          msg: 'star should contain 3 props, dec, ra, and story',
+        }));
+      });
+    });
+
+    it('should return response once user request validation for registry', (done) => {
       const response = {
         address: '17RebJGPcUX3z7zoWJdmUgkBbvZ7BAKPCB',
         requestTimeStamp: '1532296090',
