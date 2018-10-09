@@ -48,12 +48,13 @@ Just make sure that levelDB is suited for single process, not sharing by multipl
 
 ### POST
 
-``
 
 `http://localhost:8000/requestValidation` - request to get message in json format to sign in your wallet with your address.
 Payload looks like this, `{address: yourWalletAddress}`
 
+
 `http://localhost:8000/message-signature/validate` - the endpoint validates your message signature if your signature is made by your wallet(which means, signature is based on your secret key of address). Payload is supposed to have address and signature, `{address: yourWalletAddress, signature: signature}`
+
 
 `http://localhost:8000/block` - adds a new block at the end of chains, along with star and address data. Payload should looks like this.
 ```
@@ -66,13 +67,14 @@ Payload looks like this, `{address: yourWalletAddress}`
     }
 }
 ```
+
 Note that you need to follow the api call in this order, requestValidation -> message-signature/validate -> block.
+
+
 Also, when you're between requestValidation and message-signature, validationWindow will reduce its count so you need to finish your registration within that time, 5 minutes.
 
 
 ## Running the tests
-
-Please refer to `[EtoEtest.md](./EtoEtest.md)`
 
 ### Unit test(TDD)
 
