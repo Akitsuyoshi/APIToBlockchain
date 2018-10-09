@@ -37,6 +37,41 @@ function getBlockHeight() {
   });
 }
 
+function getBlockOfAddress(address) {
+  return new Promise((resolve, reject) => {
+    const result = [];
+    db.createValueStream()
+      .on('data', (data) => {
+        const block = JSON.parse(data);
+        if (block.body.address === address.substring(1)) {
+          result.push(block);
+        }
+        return result;
+      })
+      .on('error', err => reject(console.log('Unable to read data stream!', err)))
+      .on('close', () => resolve(result));
+  });
+}
+
+function getBlockByHash(hash) {
+  const errMsg = 'block of the given hash is not made';
+  return new Promise((resolve, reject) => {
+    let result;
+    return db.createValueStream()
+      .on('data', (data) => {
+        const block = JSON.parse(data);
+        console.log(block.hash, hash.substring(1));
+        if (block.hash === hash.substring(1)) {
+          result = block;
+          return result;
+        }
+        return result;
+      })
+      .on('error', () => reject(errMsg))
+      .on('close', () => ((result) ? resolve(result) : reject(result)));
+  });
+}
+
 // get block
 function getBlock(blockHeight) {
 // return object
@@ -50,4 +85,6 @@ function getBlock(blockHeight) {
   });
 }
 
-module.exports = { putBlockToDB, getBlockHeight, getBlock };
+module.exports = {
+  putBlockToDB, getBlockHeight, getBlock, getBlockOfAddress, getBlockByHash,
+};
