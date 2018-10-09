@@ -36,18 +36,43 @@ Just make sure that levelDB is suited for single process, not sharing by multipl
 
  ### GET
 
-` http://localhost:8000/block/0` - the block in the chains with given height(in this case, 0)
+`http://localhost:8000/block/0` - the block in the chains with given height(in this case, 0)
 
-` http://localhost:8000/bestBlock` - the best block, most recent added block to chains
+`http://localhost:8000/bestBlock` - the best block, most recent added block to chains
+
+`http://localhost:8000/stars/address:[ADDRESS]` - the blocks contains address query in the body
+
+`http://localhost:8000/stars/hash:[HASH]` - the block, correspoind to given hash
+
+
 
 ### POST
 
-` http://localhost:8000/block` - adds a new block at the end of chains, along with payload data
+``
 
-Note that payload should be object in this structure, `{data: stringValue}`
+`http://localhost:8000/requestValidation` - request to get message in json format to sign in your wallet with your address.
+Payload looks like this, `{address: yourWalletAddress}`
+
+`http://localhost:8000/message-signature/validate` - the endpoint validates your message signature if your signature is made by your wallet(which means, signature is based on your secret key of address). Payload is supposed to have address and signature, `{address: yourWalletAddress, signature: signature}`
+
+`http://localhost:8000/block` - adds a new block at the end of chains, along with star and address data. Payload should looks like this.
+```
+{
+    "address": "yourAddress",
+    "star": {
+        "ra": "16h 29m 1.0s",
+        "dec": "-26° 29' 24.9",
+        "story": "Found star using https://www.google.com/sky/"
+    }
+}
+```
+Note that you need to follow the api call in this order, requestValidation -> message-signature/validate -> block.
+Also, when you're between requestValidation and message-signature, validationWindow will reduce its count so you need to finish your registration within that time, 5 minutes.
 
 
 ## Running the tests
+
+Please refer to `[EtoEtest.md](./EtoEtest.md)`
 
 ### Unit test(TDD)
 
@@ -60,22 +85,6 @@ It should take following steps to make each API endpoint
 
 
 ### end to end tests
-
-1. Run the server by `yarn dev` 
-
-2. Check POST endpoint first at  http://localhost:8000/block
- - payload data should look like `{data: 'some string value'}`
- - the response data from POST is supposed to be the new created Block
-
-3. Validate POST by passing empty data
- - pass payload which is `{data: ''}`
- - the response is supposed to be `{ status: 'error', msg: 'data should include some content in string'}`
-
-4. Check GET endpoint at http://localhost:8000/block/0
- - If you followed the test for post endpoind, you can check that height block you made before.
-
-5. Validate GET endpoint by looking for id that doesn't exist in the chains at http://localhost:8000/block/-1
- - the response should be like that, `{  status: 'error', msg: 'the block of given Id does not exist in the chain'}`
 
 
 ### Stub and Integration tests for GET, POST API
