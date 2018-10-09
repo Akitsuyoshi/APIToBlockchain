@@ -86,9 +86,6 @@ It should take following steps to make each API endpoint
 4. Call api from Postman, insomnia, or something you'd prefer.
 
 
-### end to end tests
-
-
 ### Stub and Integration tests for GET, POST API
 
 ```
