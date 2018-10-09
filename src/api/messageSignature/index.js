@@ -38,8 +38,9 @@ router.post('/validate', (req, res) => {
     } else if (!isValid) {
       r.registerStar = false;
       r.status.messageSignature = 'invalid';
-      res.status(200).json(r);
+      return res.status(200).json(r);
     }
+    req.session.registerStar = 'true';
     return res.status(200).json(r);
   } catch (err) {
     console.log(err);
