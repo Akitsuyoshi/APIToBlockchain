@@ -26,6 +26,10 @@ router.get('/:blockHeight', async (req, res) => {
     const { blockHeight } = req.params;
 
     const block = await getBlock(blockHeight);
+    if (blockHeight > 0) {
+      const { star } = block.body;
+      star.storyDecoded = Buffer.from(star.story, 'hex').toString('utf8');
+    }
     return res.status(200).json(block);
   } catch (err) {
     console.log(err);

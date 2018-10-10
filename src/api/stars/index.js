@@ -16,7 +16,8 @@ router.get('/address:address', async (req, res) => {
 
     let blocks = await getBlockOfAddress(address);
     blocks = blocks.map((val) => {
-      val.body.star.storyDecoded = Buffer.from(val.body.star.story, 'hex').toString('utf8');
+      const { star } = val.body;
+      star.storyDecoded = Buffer.from(star.story, 'hex').toString('utf8');
       return val;
     });
 
@@ -33,9 +34,9 @@ router.get('/hash:hash', async (req, res) => {
     const { hash } = req.params;
 
     const block = await getBlockByHash(hash);
-    console.log(block);
     if (block.height > 0) {
-      block.body.star.storyDecoded = Buffer.from(block.body.star.story, 'hex').toString('utf8');
+      const { star } = block.body;
+      star.storyDecoded = Buffer.from(star.story, 'hex').toString('utf8');
     }
 
     return res.status(200).json(block);
