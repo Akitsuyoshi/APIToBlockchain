@@ -10,7 +10,15 @@ const makeErrObj = msg => ({
   msg,
 });
 
-const check = (obj, prop) => Object.hasOwnProperty.call(obj, prop);
+const check = (obj, prop) => {
+  if (Object.hasOwnProperty.call(obj, prop)) {
+    return !!(obj[prop].length);
+  }
+  if (prop === 'story') {
+    return /^[\w]+$/.test(obj.story);
+  }
+  return false;
+};
 
 router.get('/:blockHeight', async (req, res) => {
   const errMsg = 'the block of given Id does not exist in the chain';
@@ -27,16 +35,17 @@ router.get('/:blockHeight', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const errMsg = 'data should include validated address and star object';
+  const errStarPropMsg = 'star should contain 3 props, dec, ra, and story. story props needs to be in ascii format';
   const errStarMsg = 'star story should be described within 250 words.';
-  const errStarPropMsg = 'star should contain 3 props, dec, ra, and story';
   try {
     const { address, star } = req.body;
-    if ((!address || address !== req.session.address) || !star || req.session.registerStar !== 'true') {
+    console.log(req.session.address, req.session.registerStar);
+    if (address !== req.session.address || req.session.registerStar !== 'true') {
       throw errMsg;
-    } else if (star.story.length > 250) {
-      throw errStarMsg;
-    } else if (star.length !== 3 || check(star, 'dec') || check(star, 'ra') || check(star, 'story')) {
+    } else if (Object.keys(star).length !== 3 || !check(star, 'dec') || !check(star, 'ra') || !check(star, 'story')) {
       throw errStarPropMsg;
+    } else if (star.story.split(' ').length > 250) {
+      throw errStarMsg;
     }
 
     // eslint-disable-next-line
@@ -54,7 +63,7 @@ router.post('/', async (req, res) => {
     return req.session.destroy(() => res.status(200).json(newBlock));
   } catch (err) {
     console.log(err);
-    return res.status(200).json(makeErrObj(errMsg));
+    return res.status(200).json(makeErrObj(err));
   }
 });
 
