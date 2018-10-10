@@ -58,6 +58,8 @@ Payload looks like this, `{address: yourWalletAddress}`
 
 `http://localhost:8000/block` - adds a new block at the end of chains, along with star and address data. Payload should looks like this.
 ```
+
+// story's value is only acceptable in ASCII format
 {
     "address": "yourAddress",
     "star": {
